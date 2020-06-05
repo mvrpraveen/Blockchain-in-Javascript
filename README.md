@@ -1,5 +1,5 @@
 # Blockchain-in-Javascript
-Code for Understanding blockchain by building your own in Javascript
+Understand blockchain intricately by building your own in Javascript
 
 Blockchain essentially has 4 basic building blocks :
 
