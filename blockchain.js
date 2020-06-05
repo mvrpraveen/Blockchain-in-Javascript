@@ -28,10 +28,6 @@ class Block {
 
 }
 
-
-
-
-
 /*------------------------------------------------Defining the Blockchain class ------------------------------------------*/
 
 
@@ -175,8 +171,8 @@ class Wallet {
 }
 
 
+/*--------------------------------------------Instantiating the blockchain---------------------------------------------*/
 
-/*--------------------------------------------Instantiating with the blockchain---------------------------------------------*/
 
 //initialise the chain
 let rubyChain = new Blockchain()
