@@ -43,7 +43,7 @@ class Blockchain {
     }
 
     genesisBlock() {
-        let genesis = new Block(0, '00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '', '000000000000000000', 0)
+        let genesis = new Block(0, '0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '', '000000000000000000', 0)
         genesis.difficulty = genesis.difficulty.indexOf('f')
         return genesis
     }
@@ -69,8 +69,11 @@ class Blockchain {
         const blockBeforeTimestamp = this.blockchain[lastBlock.index - 1].timestamp
         const blockTime = lastBlockTimestamp - blockBeforeTimestamp
 
-        blockTime > mineRate ? block.difficulty + 1 : block.difficulty - 1
-        return block.difficulty
+        if (blockTime > mineRate) {
+            return block.difficulty - 1
+        } else {
+            return block.difficulty + 1
+        }
     }
 
 
@@ -88,17 +91,16 @@ class Blockchain {
 
 
     proofOfWork(block) {
-        let tempHash = block.getHash()
-        let zeroCount = this.zeroesInHash(tempHash)
+        block.hash = block.getHash()
+        let zeroCount = this.zeroesInHash(block.hash)
 
         while (zeroCount < block.difficulty) {
             block.nonce++
-            let updatedBlock = new Block(block.index, block.difficulty, block.transactionsRoot, tempHash, block.nonce)
+            let updatedBlock = new Block(block.index, block.difficulty, block.transactionsRoot, block.hash, block.nonce)
             block.timestamp = updatedBlock.timestamp
             block.hash = updatedBlock.hash
-            zeroCount = this.zeroesInHash(block)
+            zeroCount = this.zeroesInHash(block.hash)
         }
-        return block
     }
 
 
@@ -108,9 +110,9 @@ class Blockchain {
         if (block.index > 3) {
             block.difficulty = this.calculateDifficulty(block)
         }
-        let newBlock = this.proofOfWork(block)
-        newBlock.transactions = JSON.stringify(this.transactionsPool)
-        this.blockchain.push(newBlock)
+        this.proofOfWork(block)
+        block.transactions = JSON.stringify(this.transactionsPool)
+        this.blockchain.push(block)
         this.transactionsPool = []
 
     }
@@ -198,8 +200,7 @@ for (let i = 0; i < 5; i++) {
     let newBlock = new Block(rubyChain.getLatestBlock().index + 1, rubyChain.getLatestBlock().difficulty, '', rubyChain.getLatestBlock().hash, 0)
 
     rubyChain.mine(newBlock)
+    console.log(newBlock)
 }
-
-console.log(rubyChain)
 
 
